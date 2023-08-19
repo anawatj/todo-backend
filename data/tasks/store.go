@@ -55,7 +55,7 @@ func (s *Store) GetTaskByID(id string) (*domains.Task, error) {
 func (s *Store) GetListTask(sort string, sortType string, searchTitle string, searchDescription string) ([]domains.Task, error) {
 	var results []Task
 	var where string
-	var whereParams []string
+	var whereParams []interface{}
 	var orderBy string
 	where = where + " 1=1 "
 	if searchDescription != "" {
@@ -67,10 +67,15 @@ func (s *Store) GetListTask(sort string, sortType string, searchTitle string, se
 		where = where + " AND title=? "
 		whereParams = append(whereParams, searchTitle)
 	}
-
+	if sort == "" {
+		sort = "id"
+	}
+	if sortType == "" {
+		sortType = "asc"
+	}
 	orderBy = sort + " " + sortType
 
-	err := s.DB.Order(orderBy).Where(where, whereParams).Find(&results).Error
+	err := s.DB.Order(orderBy).Where(where, whereParams...).Find(&results).Error
 	if err != nil {
 		appErr := domainError.NewAppError(errors.Wrap(err, listError), domainError.RepositoryError)
 		return nil, appErr
