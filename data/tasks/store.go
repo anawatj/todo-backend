@@ -59,13 +59,13 @@ func (s *Store) GetListTask(sort string, sortType string, searchTitle string, se
 	var orderBy string
 	where = where + " 1=1 "
 	if searchDescription != "" {
-		where = where + " AND description=? "
-		whereParams = append(whereParams, searchDescription)
+		where = where + " AND description LIKE ? "
+		whereParams = append(whereParams, `%%`+searchDescription+`%%`)
 	}
 
 	if searchTitle != "" {
-		where = where + " AND title=? "
-		whereParams = append(whereParams, searchTitle)
+		where = where + " AND title LIKE ? "
+		whereParams = append(whereParams, `%%`+searchTitle+`%%`)
 	}
 	if sort == "" {
 		sort = "id"
