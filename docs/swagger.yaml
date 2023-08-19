@@ -53,6 +53,27 @@ paths:
       consumes:
       - application/json
       description: Getting list task from database
+      parameters:
+      - description: sort by title
+        in: query
+        name: SortTitle
+        type: string
+      - description: sort by create_at
+        in: query
+        name: SortCreateAt
+        type: string
+      - description: sort by status
+        in: query
+        name: SortStatus
+        type: string
+      - description: filter by title
+        in: query
+        name: Title
+        type: string
+      - description: filter by description
+        in: query
+        name: Description
+        type: string
       produces:
       - application/json
       responses:

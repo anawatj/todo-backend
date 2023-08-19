@@ -26,6 +26,38 @@
                     "application/json"
                 ],
                 "summary": "get list task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "sort by title",
+                        "name": "SortTitle",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "sort by create_at",
+                        "name": "SortCreateAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "sort by status",
+                        "name": "SortStatus",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter by title",
+                        "name": "Title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter by description",
+                        "name": "Description",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

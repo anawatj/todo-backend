@@ -18,6 +18,11 @@ type TaskHandler struct {
 // @Description Getting list task from database
 // @Accept   json
 // @Produce  json
+// @Param    SortTitle    query     string  false  "sort by title"
+// @Param    SortCreateAt    query     string  false  "sort by create_at"
+// @Param    SortStatus    query     string  false  "sort by status"
+// @Param    Title    query     string  false  "filter by title"
+// @Param    Description    query     string  false  "filter by description"
 // @Success  200   {object} ListResponse
 // @Router   /tasks [get]
 func (handler *TaskHandler) GetListTask(c *gin.Context) {
