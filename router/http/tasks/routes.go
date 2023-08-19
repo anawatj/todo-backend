@@ -23,9 +23,10 @@ type TaskHandler struct {
 func (handler *TaskHandler) GetListTask(c *gin.Context) {
 	sortTitle := c.Query("SortTitle")
 	sortCreateAt := c.Query("SortCreateAt")
+	sortStatus := c.Query("SortStatus")
 	searchTitle := c.Query("Title")
 	searchDescription := c.Query("Description")
-	results, err := handler.Service.GetListTask(sortTitle, sortCreateAt, searchTitle, searchDescription)
+	results, err := handler.Service.GetListTask(sortTitle, sortCreateAt, sortStatus, searchTitle, searchDescription)
 	if err != nil {
 		c.Error(err)
 		return

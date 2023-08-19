@@ -170,7 +170,7 @@ func TestGetListTask(t *testing.T) {
 	store.CreateTask(&task)
 	rows := sqlmock.NewRows([]string{"ID", "Title", "Description", "Image", "CreateAt", "Status"}).AddRow(task.ID, task.Title, task.Description, task.CreateAt, task.Image, task.Status)
 	s.mock.ExpectQuery(`SELECT`).WillReturnRows(rows)
-	store.GetListTask("", "", "", "")
+	store.GetListTask("", "", "", "", "")
 	s.mock.ExpectCommit()
 	defer db.Close()
 }
