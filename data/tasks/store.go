@@ -54,31 +54,33 @@ func (s *Store) GetTaskByID(id string) (*domains.Task, error) {
 }
 func (s *Store) GetListTask(sortTitle string, sortCreateAt string, searchTitle string, searchDescription string) ([]domains.Task, error) {
 	var results []Task
+	var where string
+	var whereParams []string
+	where = where + "1=1"
+	if searchDescription != "" {
+		where = where + " AND description=?"
+		whereParams = append(whereParams, searchDescription)
+	}
+
+	if searchTitle != "" {
+		where = where + " AND title=?"
+		whereParams = append(whereParams, searchTitle)
+	}
+
 	//var orderByes []string
-	//var whereFields []string
-	//var whereParams []string
+
 	/*if sortTitle != "" {
 		orderByes = append(orderByes, "title asc")
 	}
 	if sortCreateAt != "" {
 		orderByes = append(orderByes, "create_at asc")
 	}
-	if searchTitle != "" {
-		whereFields = append(whereFields, `title=$`+strconv.Itoa(len(whereFields)+1))
-		whereParams = append(whereParams, searchTitle)
-	}
-	if searchDescription != "" {
-		whereFields = append(whereFields, `description=$`+strconv.Itoa(len(whereFields)+1))
-		whereParams = append(whereParams, searchDescription)
-	}
 	if len(orderByes) == 0 {
 		orderByes = append(orderByes, "id")
 	}
-	if len(whereFields) == 0 || len(whereParams) == 0 {
-		whereFields = append(whereFields, "1=$1")
-		whereParams = append(whereParams, "1")
-	}*/
-	err := s.DB.Find(&results).Error
+	*/
+
+	err := s.DB.Where(where, whereParams).Find(&results).Error
 	if err != nil {
 		appErr := domainError.NewAppError(errors.Wrap(err, listError), domainError.RepositoryError)
 		return nil, appErr
