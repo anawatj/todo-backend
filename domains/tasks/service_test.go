@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestService(t *testing.T) {
+func TestCreateTaskService(t *testing.T) {
 	t.Run("test create service", func(t *testing.T) {
 		taskRepoMock := new(mocks.TaskRepoMock)
 
@@ -31,6 +31,9 @@ func TestService(t *testing.T) {
 		})
 
 	})
+
+}
+func TestUpdateTaskService(t *testing.T) {
 	t.Run("test update service", func(t *testing.T) {
 		taskRepoMock := new(mocks.TaskRepoMock)
 		task := tasks.Task{
@@ -48,6 +51,9 @@ func TestService(t *testing.T) {
 			assert.Equal(t, nil, err)
 		})
 	})
+}
+
+func TestGetTaskByIDService(t *testing.T) {
 	t.Run("test get by id service", func(t *testing.T) {
 		taskRepoMock := new(mocks.TaskRepoMock)
 		task := tasks.Task{
@@ -65,6 +71,9 @@ func TestService(t *testing.T) {
 			assert.Equal(t, nil, err)
 		})
 	})
+}
+
+func TestDeleteTaskService(t *testing.T) {
 	t.Run("test delete service", func(t *testing.T) {
 		taskRepoMock := new(mocks.TaskRepoMock)
 
@@ -75,6 +84,8 @@ func TestService(t *testing.T) {
 			assert.Equal(t, nil, err)
 		})
 	})
+}
+func TestGetListTaskService(t *testing.T) {
 	t.Run("test get list service", func(t *testing.T) {
 		var results []tasks.Task
 		taskRepoMock := new(mocks.TaskRepoMock)
@@ -85,5 +96,4 @@ func TestService(t *testing.T) {
 			assert.Equal(t, nil, err)
 		})
 	})
-
 }
