@@ -12,6 +12,8 @@ const (
 	createError = "Error in creating new tasks"
 	readError   = "Error in finding tasks in the database"
 	listError   = "Error in getting tasks from the database"
+	updateError = "Error in updating tasks to the database"
+	deleteError = "Error in deleting tasks from the database"
 )
 
 type Store struct {
@@ -99,7 +101,7 @@ func (s *Store) UpdateTask(task *domains.Task, id string) (*domains.Task, error)
 	}
 
 	if err := query.Error; err != nil {
-		appErr := domainError.NewAppError(errors.Wrap(err, readError), domainError.RepositoryError)
+		appErr := domainError.NewAppError(errors.Wrap(err, updateError), domainError.RepositoryError)
 		return nil, appErr
 	}
 	entity := ToDBModel(task)
@@ -116,7 +118,7 @@ func (s *Store) DeleteTask(id string) error {
 
 	err := s.DB.Where("id=?", id).Delete(&Task{}).Error
 	if err != nil {
-		appErr := domainError.NewAppError(errors.Wrap(err, createError), domainError.RepositoryError)
+		appErr := domainError.NewAppError(errors.Wrap(err, deleteError), domainError.RepositoryError)
 		return appErr
 	}
 
