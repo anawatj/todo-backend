@@ -75,5 +75,15 @@ func TestCreateTask(t *testing.T) {
 			assert.Equal(t, nil, err)
 		})
 	})
+	t.Run("test get list service", func(t *testing.T) {
+		var results []tasks.Task
+		taskRepoMock := new(mocks.TaskRepoMock)
+		taskRepoMock.On("GetListTask", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(&results, nil)
+		service := tasks.NewService(taskRepoMock)
+		_, err := service.GetListTask("", "", "", "")
+		t.Run("test store data with no error", func(t *testing.T) {
+			assert.Equal(t, nil, err)
+		})
+	})
 
 }
