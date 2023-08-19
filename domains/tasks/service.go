@@ -12,7 +12,8 @@ type Service struct {
 }
 
 func (svc *Service) CreateTask(task *Task) (*Task, error) {
-	return svc.Repository.CreateTask(task)
+	result, err := svc.Repository.CreateTask(task)
+	return result, err
 
 }
 func (svc *Service) GetTaskByID(id string) (*Task, error) {
