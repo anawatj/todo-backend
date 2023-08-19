@@ -65,5 +65,15 @@ func TestCreateTask(t *testing.T) {
 			assert.Equal(t, nil, err)
 		})
 	})
+	t.Run("test delete service", func(t *testing.T) {
+		taskRepoMock := new(mocks.TaskRepoMock)
+
+		taskRepoMock.On("DeleteTask", mock.AnythingOfType("string")).Return(nil)
+		service := tasks.NewService(taskRepoMock)
+		err := service.DeleteTask("4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2")
+		t.Run("test store data with no error", func(t *testing.T) {
+			assert.Equal(t, nil, err)
+		})
+	})
 
 }
