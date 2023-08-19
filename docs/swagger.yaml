@@ -1,0 +1,140 @@
+basePath: /api
+definitions:
+  tasks.ListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/tasks.TaskResponse'
+        type: array
+    type: object
+  tasks.TaskResponse:
+    properties:
+      createAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  tasks.TaskValidator:
+    properties:
+      description:
+        type: string
+      image:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+    required:
+    - description
+    - image
+    - status
+    - title
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for ecommerce website
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Zog_festiv eCommerce API
+  version: "1.0"
+paths:
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Getting list task from database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.ListResponse'
+      summary: get list task
+    post:
+      consumes:
+      - application/json
+      description: Adding new task to database
+      parameters:
+      - description: Task Data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.TaskValidator'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/tasks.ListResponse'
+      summary: create task
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete task from database
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.ListResponse'
+      summary: delete task
+    get:
+      consumes:
+      - application/json
+      description: getting task by id from database
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.ListResponse'
+      summary: get task by id
+    put:
+      consumes:
+      - application/json
+      description: update task to database
+      parameters:
+      - description: Task Data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.TaskValidator'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tasks.ListResponse'
+      summary: update task
+schemes:
+- http
+swagger: "2.0"
