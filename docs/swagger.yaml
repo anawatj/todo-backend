@@ -54,17 +54,13 @@ paths:
       - application/json
       description: Getting list task from database
       parameters:
-      - description: sort by title
+      - description: sort by field
         in: query
-        name: SortTitle
+        name: Sort
         type: string
-      - description: sort by create_at
+      - description: sort type asc ,desc
         in: query
-        name: SortCreateAt
-        type: string
-      - description: sort by status
-        in: query
-        name: SortStatus
+        name: SortType
         type: string
       - description: filter by title
         in: query

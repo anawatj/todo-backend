@@ -18,20 +18,18 @@ type TaskHandler struct {
 // @Description Getting list task from database
 // @Accept   json
 // @Produce  json
-// @Param    SortTitle    query     string  false  "sort by title"
-// @Param    SortCreateAt    query     string  false  "sort by create_at"
-// @Param    SortStatus    query     string  false  "sort by status"
+// @Param    Sort    query     string  false  "sort by field"
+// @Param    SortType    query     string  false  "sort type asc ,desc"
 // @Param    Title    query     string  false  "filter by title"
 // @Param    Description    query     string  false  "filter by description"
 // @Success  200   {object} ListResponse
 // @Router   /tasks [get]
 func (handler *TaskHandler) GetListTask(c *gin.Context) {
-	sortTitle := c.Query("SortTitle")
-	sortCreateAt := c.Query("SortCreateAt")
-	sortStatus := c.Query("SortStatus")
+	sort := c.Query("Sort")
+	sortType := c.Query("SortType")
 	searchTitle := c.Query("Title")
 	searchDescription := c.Query("Description")
-	results, err := handler.Service.GetListTask(sortTitle, sortCreateAt, sortStatus, searchTitle, searchDescription)
+	results, err := handler.Service.GetListTask(sort, sortType, searchTitle, searchDescription)
 	if err != nil {
 		c.Error(err)
 		return

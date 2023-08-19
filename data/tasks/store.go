@@ -52,31 +52,23 @@ func (s *Store) GetTaskByID(id string) (*domains.Task, error) {
 
 	return ToDomainModel(result), nil
 }
-func (s *Store) GetListTask(sortTitle string, sortCreateAt string, searchTitle string, sortStatus string, searchDescription string) ([]domains.Task, error) {
+func (s *Store) GetListTask(sort string, sortType string, searchTitle string, searchDescription string) ([]domains.Task, error) {
 	var results []Task
 	var where string
 	var whereParams []string
 	var orderBy string
-	where = where + "1=1"
+	where = where + " 1=1 "
 	if searchDescription != "" {
-		where = where + " AND description=?"
+		where = where + " AND description=? "
 		whereParams = append(whereParams, searchDescription)
 	}
 
 	if searchTitle != "" {
-		where = where + " AND title=?"
+		where = where + " AND title=? "
 		whereParams = append(whereParams, searchTitle)
 	}
-	if sortTitle != "" {
-		orderBy = orderBy + " title asc, "
-	}
-	if sortCreateAt != "" {
-		orderBy = orderBy + " create_at asc, "
-	}
-	if sortStatus != "" {
-		orderBy = orderBy + " status asc, "
-	}
-	orderBy = orderBy + " id asc "
+
+	orderBy = sort + " " + sortType
 
 	err := s.DB.Order(orderBy).Where(where, whereParams).Find(&results).Error
 	if err != nil {

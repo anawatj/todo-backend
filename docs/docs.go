@@ -33,20 +33,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "sort by title",
-                        "name": "SortTitle",
+                        "description": "sort by field",
+                        "name": "Sort",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "sort by create_at",
-                        "name": "SortCreateAt",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "sort by status",
-                        "name": "SortStatus",
+                        "description": "sort type asc ,desc",
+                        "name": "SortType",
                         "in": "query"
                     },
                     {
