@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func TestCreateTask(t *testing.T) {
+func TestService(t *testing.T) {
 	t.Run("test create service", func(t *testing.T) {
 		taskRepoMock := new(mocks.TaskRepoMock)
 
