@@ -56,6 +56,42 @@ func TestCreateApi(t *testing.T) {
 
 	})
 
+	t.Run("test create api json error", func(t *testing.T) {
+		task := domains.Task{
+			ID:          "4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2",
+			Title:       "test",
+			Description: "test",
+			Status:      "IN_PROGRESS",
+			Image:       "MTExMQ==",
+			CreateAt:    time.Date(2023, time.August, 19, 22, 1, 46, 785911500, time.Local),
+		}
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("CreateTask", mock.AnythingOfType("*tasks.Task")).Return(&task, nil)
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.POST("/tasks", handler.CreateTask)
+		json := `{
+			"title":"test",
+			"description1":"test",
+			"image":"MTExMQ==",
+			"status:"IN_PROGRESS"
+		}`
+		//body, err := json.Marshal(mockTask)
+		//assert.NoError(t, err)
+
+		req := httptest.NewRequest(http.MethodPost, "/tasks", strings.NewReader(json))
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+
+	})
+
 	t.Run("test create api error", func(t *testing.T) {
 
 		taskServiceMock := new(mocks.TaskServiceMock)
@@ -105,6 +141,41 @@ func TestUpdateApi(t *testing.T) {
 		assert.NoError(t, err)
 
 		req := httptest.NewRequest(http.MethodPut, `/tasks/`+task.ID, strings.NewReader(string(body)))
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+	})
+
+	t.Run("test update api json error", func(t *testing.T) {
+		task := domains.Task{
+			ID:          "4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2",
+			Title:       "test",
+			Description: "test",
+			Status:      "IN_PROGRESS",
+			Image:       "MTExMQ==",
+			CreateAt:    time.Date(2023, time.August, 19, 22, 1, 46, 785911500, time.Local),
+		}
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("GetTaskByID", mock.AnythingOfType("string")).Return(&task, nil)
+		taskServiceMock.On("UpdateTask", mock.AnythingOfType("*tasks.Task"), mock.AnythingOfType("string")).Return(&task, nil)
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.PUT("/tasks/:id", handler.UpdateTask)
+
+		json := `{
+			"title":"test",
+			"description1":"test",
+			"image":"MTExMQ==",
+			"status:"IN_PROGRESS"
+		}`
+
+		req := httptest.NewRequest(http.MethodPut, `/tasks/`+task.ID, strings.NewReader(json))
 		gin.ServeHTTP(rec, req)
 
 		t.Run("test status code and response body", func(t *testing.T) {
