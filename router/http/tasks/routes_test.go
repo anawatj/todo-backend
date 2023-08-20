@@ -116,4 +116,34 @@ func TestGetByIdApi(t *testing.T) {
 
 		})
 	})
+
+}
+func TestDeleteApi(t *testing.T) {
+	t.Run("test delete success", func(t *testing.T) {
+		task := domains.Task{
+			ID:          "4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2",
+			Title:       "test",
+			Description: "test",
+			Status:      "IN_PROGRESS",
+			Image:       "MTExMQ==",
+			CreateAt:    time.Date(2023, time.August, 19, 22, 1, 46, 785911500, time.Local),
+		}
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("GetTaskByID", mock.AnythingOfType("string")).Return(&task, nil)
+
+		taskServiceMock.On("DeleteTask", mock.AnythingOfType("string")).Return(nil)
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.DELETE("/tasks/:id", handler.GetTaskByID)
+		req := httptest.NewRequest(http.MethodDelete, `/tasks/4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2`, nil)
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+	})
 }
