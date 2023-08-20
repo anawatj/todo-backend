@@ -254,7 +254,25 @@ func TestGetListApi(t *testing.T) {
 	t.Run("test get list success", func(t *testing.T) {
 		var results []domains.Task
 		taskServiceMock := new(mocks.TaskServiceMock)
-		taskServiceMock.On("GetListTask", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(&results, nil)
+		taskServiceMock.On("GetListTask", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(results, nil)
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.GET("/tasks", handler.GetListTask)
+		req := httptest.NewRequest(http.MethodGet, `/tasks`, nil)
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+	})
+
+	t.Run("test get list error", func(t *testing.T) {
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("GetListTask", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(nil, fmt.Errorf("RepositoryError"))
 		gin := gin.New()
 		rec := httptest.NewRecorder()
 		handler := tasks.TaskHandler{
