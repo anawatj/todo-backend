@@ -7,11 +7,13 @@ import (
 	"strings"
 	"testing"
 	"time"
+	domainError "todo-backend/domains/errors"
 	domains "todo-backend/domains/tasks"
 	"todo-backend/mocks"
 	"todo-backend/router/http/tasks"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -141,6 +143,34 @@ func TestDeleteApi(t *testing.T) {
 		req := httptest.NewRequest(http.MethodDelete, `/tasks/4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2`, nil)
 		gin.ServeHTTP(rec, req)
 
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+	})
+	t.Run("test delete error", func(t *testing.T) {
+		task := domains.Task{
+			ID:          "4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2",
+			Title:       "test",
+			Description: "test",
+			Status:      "IN_PROGRESS",
+			Image:       "MTExMQ==",
+			CreateAt:    time.Date(2023, time.August, 19, 22, 1, 46, 785911500, time.Local),
+		}
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("GetTaskByID", mock.AnythingOfType("string")).Return(&task, nil)
+		var err error
+		taskServiceMock.On("DeleteTask", mock.AnythingOfType("string")).Return(domainError.NewAppError(errors.Wrap(err, "Error in deleting tasks from the database"), domainError.RepositoryError))
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.DELETE("/tasks/:id", handler.DeleteTask)
+		req := httptest.NewRequest(http.MethodDelete, `/tasks/4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2`, nil)
+		gin.ServeHTTP(rec, req)
+		//fmt.Println(req.Response.StatusCode)
 		t.Run("test status code and response body", func(t *testing.T) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 
