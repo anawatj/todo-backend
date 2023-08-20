@@ -137,8 +137,28 @@ func TestDeleteApi(t *testing.T) {
 		handler := tasks.TaskHandler{
 			Service: taskServiceMock,
 		}
-		gin.DELETE("/tasks/:id", handler.GetTaskByID)
+		gin.DELETE("/tasks/:id", handler.DeleteTask)
 		req := httptest.NewRequest(http.MethodDelete, `/tasks/4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2`, nil)
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+	})
+}
+func TestGetListApi(t *testing.T) {
+	t.Run("test get list success", func(t *testing.T) {
+		var results []domains.Task
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("GetListTask", mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string"), mock.AnythingOfType("string")).Return(&results, nil)
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.GET("/tasks", handler.GetListTask)
+		req := httptest.NewRequest(http.MethodGet, `/tasks`, nil)
 		gin.ServeHTTP(rec, req)
 
 		t.Run("test status code and response body", func(t *testing.T) {
