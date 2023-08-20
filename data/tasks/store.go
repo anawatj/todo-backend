@@ -90,7 +90,7 @@ func (s *Store) GetListTask(sort string, sortType string, searchTitle string, se
 	return tasks, nil
 }
 func (s *Store) UpdateTask(task *domains.Task, id string) (*domains.Task, error) {
-	var result Task
+	result := &Task{}
 	query := s.DB.Where("id=?", id).First(result)
 	if query.RecordNotFound() {
 		appErr := domainError.NewAppErrorWithType(domainError.NotFound)
@@ -102,9 +102,9 @@ func (s *Store) UpdateTask(task *domains.Task, id string) (*domains.Task, error)
 		return nil, appErr
 	}
 	entity := ToDBModel(task)
-	err := s.DB.Update(entity).Error
+	err := s.DB.Save(entity).Error
 	if err != nil {
-		appErr := domainError.NewAppError(errors.Wrap(err, createError), domainError.RepositoryError)
+		appErr := domainError.NewAppError(errors.Wrap(err, updateError), domainError.RepositoryError)
 		return nil, appErr
 	}
 
