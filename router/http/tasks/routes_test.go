@@ -56,6 +56,30 @@ func TestCreateApi(t *testing.T) {
 
 	})
 
+	t.Run("test create api error", func(t *testing.T) {
+
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("CreateTask", mock.AnythingOfType("*tasks.Task")).Return(nil, fmt.Errorf("RepositoryError"))
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.POST("/tasks", handler.CreateTask)
+
+		body, err := json.Marshal(mockTask)
+		assert.NoError(t, err)
+
+		req := httptest.NewRequest(http.MethodPost, "/tasks", strings.NewReader(string(body)))
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+
+	})
+
 }
 func TestUpdateApi(t *testing.T) {
 	t.Run("test update api success", func(t *testing.T) {
@@ -88,6 +112,29 @@ func TestUpdateApi(t *testing.T) {
 
 		})
 	})
+
+	t.Run("test update api error", func(t *testing.T) {
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("GetTaskByID", mock.AnythingOfType("string")).Return(nil, fmt.Errorf("RepositoryError"))
+		taskServiceMock.On("UpdateTask", mock.AnythingOfType("*tasks.Task"), mock.AnythingOfType("string")).Return(nil, fmt.Errorf("RepositoryError"))
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.PUT("/tasks/:id", handler.UpdateTask)
+
+		body, err := json.Marshal(mockTask)
+		assert.NoError(t, err)
+
+		req := httptest.NewRequest(http.MethodPut, `/tasks/4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2`, strings.NewReader(string(body)))
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+	})
 }
 
 func TestGetByIdApi(t *testing.T) {
@@ -102,6 +149,32 @@ func TestGetByIdApi(t *testing.T) {
 		}
 		taskServiceMock := new(mocks.TaskServiceMock)
 		taskServiceMock.On("GetTaskByID", mock.AnythingOfType("string")).Return(&task, nil)
+
+		gin := gin.New()
+		rec := httptest.NewRecorder()
+		handler := tasks.TaskHandler{
+			Service: taskServiceMock,
+		}
+		gin.GET("/tasks/:id", handler.GetTaskByID)
+		req := httptest.NewRequest(http.MethodGet, `/tasks/`+task.ID, nil)
+		gin.ServeHTTP(rec, req)
+
+		t.Run("test status code and response body", func(t *testing.T) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+		})
+	})
+	t.Run("test get by id api error", func(t *testing.T) {
+		task := domains.Task{
+			ID:          "4f19cbbc-8c2c-49dd-b48a-eabafb6ab7f2",
+			Title:       "test",
+			Description: "test",
+			Status:      "IN_PROGRESS",
+			Image:       "MTExMQ==",
+			CreateAt:    time.Date(2023, time.August, 19, 22, 1, 46, 785911500, time.Local),
+		}
+		taskServiceMock := new(mocks.TaskServiceMock)
+		taskServiceMock.On("GetTaskByID", mock.AnythingOfType("string")).Return(nil, fmt.Errorf("RepositoryError"))
 
 		gin := gin.New()
 		rec := httptest.NewRecorder()
